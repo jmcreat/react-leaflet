@@ -27,10 +27,15 @@ const [socketData, setSocketData] = useState();
       setSocketData(dataSet);
     }
 });
+let allPoints = [];
+
+
+
+
   useEffect(() => {
 
     if (!map) return;
-    webSocketLogin()  // socket 연결용 함수
+    // webSocketLogin()  // socket 연결용 함수
 
     const legend = L.control({ position: "bottomleft" });
 
@@ -104,17 +109,50 @@ const [socketData, setSocketData] = useState();
     // add feature group to map
     const fg = L.featureGroup().addTo(map);
 
-    // create random marker
-    function randomMarker() {
-      // get bounds of map
-      const bounds = map.getBounds();
+    function getDummyData(){
+      fetch('http://localhost:7902/location.json')
+      .then(response => response.json())
+      .then(data => {
+        // JSON 데이터를 사용하는 로직
+        data.map((da)=>
+          allPoints.push([da.lat,da.lng])
+        )
+        console.log(allPoints)
 
+        for (let i = 0; i < allPoints.length; i++) {
+          L.marker(allPoints[i], {
+            icon: L.divIcon({
+              className: "custom-icon-marker",
+              iconSize: L.point(40, 40),
+              html: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" class="marker"><path fill-opacity="0.25" d="M16 32s1.427-9.585 3.761-12.025c4.595-4.805 8.685-.99 8.685-.99s4.044 3.964-.526 8.743C25.514 30.245 16 32 16 32z"/><path stroke="#fff" fill="#${randomColor()}" d="M15.938 32S6 17.938 6 11.938C6 .125 15.938 0 15.938 0S26 .125 26 11.875C26 18.062 15.938 32 15.938 32zM16 6a4 4 0 100 8 4 4 0 000-8z"/></svg>`,
+              iconAnchor: [12, 24],
+              popupAnchor: [9, -26],
+            }),
+          })
+            .bindPopup(`<b>Marker coordinates</b>:<br>${allPoints[i].toString()}`)
+            .addTo(fg);
+        }
+  
+        // zoom to feature group and add padding
+        map.fitBounds(fg.getBounds(), { padding: [20, 20] });
+
+
+        
+      })
+      .catch(error => {
+        // 오류 처리
+        console.error(error);
+      });
+    }
+
+    function getRandomData(){
+      const bounds = map.getBounds();
+      
       let southWest = bounds.getSouthWest();
       let northEast = bounds.getNorthEast();
       let lngSpan = northEast.lng - southWest.lng;
       let latSpan = northEast.lat - southWest.lat;
 
-      let allPoints = [];
 
       // generate random points and add to array 'allPoints'
       for (let i = 0; i < 15; i++) {
@@ -127,8 +165,6 @@ const [socketData, setSocketData] = useState();
         console.log(southWest.lng + lngSpan * Math.random());
         allPoints.push(points);
       }
-
-      // add markers to feature group
       for (let i = 0; i < allPoints.length; i++) {
         L.marker(allPoints[i], {
           icon: L.divIcon({
@@ -145,6 +181,18 @@ const [socketData, setSocketData] = useState();
 
       // zoom to feature group and add padding
       map.fitBounds(fg.getBounds(), { padding: [20, 20] });
+    }
+
+    // create random marker
+    function randomMarker() {
+      // get bounds of map
+
+   
+ 
+      getDummyData()  //더미 데이터 호출
+      // getRandomData()  //랜덤 데이터 호출
+      // add markers to feature group
+
     }
 
     //  remove markers from feature group
