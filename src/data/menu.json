@@ -1,5 +1,10 @@
 [
   {
+    "link": "test-canvas",
+    "text": "test canvas",
+    "done": "true"
+  },
+  {
     "link": "test-page",
     "text": "test page",
     "done": "true"
