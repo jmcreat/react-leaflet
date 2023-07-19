@@ -3,7 +3,7 @@ import { useMap } from "react-leaflet";
 import "leaflet-canvas-marker";
 import L from "leaflet";
 //tooltip + canvas
-export default function LeafletCanvasMarker() {
+export default function LeafletCanvasMarkerRotate() {
   const map = useMap();
 
   useEffect(() => {
@@ -19,15 +19,16 @@ export default function LeafletCanvasMarker() {
     });
 
     var icon = L.icon({
-      iconUrl: "https://unpkg.com/leaflet@1.7.1/dist/images/marker-icon.png",
-      iconSize: [20, 18],
+      iconUrl: "http://localhost:8080/asset/img/vessel_pink.png",
+      iconSize: [20, 10],
       iconAnchor: [10, 9],
     });
 
     var markers = [];
-    for (var i = 0; i < 10000; i++) {
+    for (var i = 0; i < 500; i++) {
       var marker = L.marker(
         [37.005 + Math.random() * 1.8, 126.3317 + Math.random() * 3.6],
+
         { icon: icon }
       )
       .bindPopup("I Am popup " + i);
@@ -40,7 +41,6 @@ export default function LeafletCanvasMarker() {
         interactive: true,
       }).setContent("I Am " + i);
       marker.bindTooltip(tooltip);
-
       markers.push(marker);
     }
     

@@ -33,8 +33,6 @@ const [socketData, setSocketData] = useState("");
 let allPoints = [];
 
   useEffect(() => {
-    console.log("map start!!!!!!!!!!!")
-    console.log(map)
     if (!map) return;
 
       webSocketLogin()  // socket 연결용 함수
